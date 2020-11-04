@@ -1,0 +1,381 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "[Ссылка на домашнее ДЗ  «Исключения и обработка ошибок»](https://netology.ru/profile/program/pyda-15/lessons/44586/lesson_items/204446)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "##### Задание 1\n",
+    "\n",
+    "Печатные газеты использовали свой формат дат для каждого выпуска. Для каждой газеты из списка напишите формат указанной даты для перевода в объект datetime:\n",
+    "- The Moscow Times - Wednesday, October 2, 2002\n",
+    "- The Guardian - Friday, 11.10.13\n",
+    "- Daily News - Thursday, 18 August 1977"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import datetime as dt\n",
+    "import random\n",
+    "from ipywidgets import DatePicker, Dropdown"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "['The Moscow Times', 'Wednesday, October 2, 2002'] 2002-10-02 00:00:00\n",
+      "['The Guardian', 'Friday, 11.10.13'] 2013-10-11 00:00:00\n",
+      "['Daily News', 'Thursday, 18 August 1977'] 1977-08-18 00:00:00\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Решение по заданию 1\n",
+    "\n",
+    "format_dt_news = [['The Moscow Times', 'Wednesday, October 2, 2002'],\n",
+    "                  ['The Guardian',     'Friday, 11.10.13'],\n",
+    "                  ['Daily News',       'Thursday, 18 August 1977']]\n",
+    "\n",
+    "#MT = dt.datetime.strptime('Wednesday, October 2, 2002', '%A, %B %d, %Y')\n",
+    "\n",
+    "# #Вариант 1\n",
+    "# def to_date_MT(str_dt):\n",
+    "#     return(dt.datetime.strptime(str_dt, '%A, %B %d, %Y'))\n",
+    "\n",
+    "# def to_date_TG(str_dt):\n",
+    "#     return(dt.datetime.strptime(str_dt, '%A, %d.%m.%y'))\n",
+    "\n",
+    "# def to_date_DN(str_dt):\n",
+    "#     return(dt.datetime.strptime(str_dt, '%A, %d %B %Y'))\n",
+    "\n",
+    "# didt_to_dt = {'The Moscow Times':to_date_MT,\n",
+    "#               'The Guardian':to_date_TG,\n",
+    "#               'Daily News':to_date_DN}\n",
+    "\n",
+    "# for news_ in format_dt_news:\n",
+    "#     print(news_, didt_to_dt[news_[0]](news_[1]))\n",
+    "    \n",
+    "#Вариант 2\n",
+    "news_to_dt = {'The Moscow Times':'%A, %B %d, %Y',\n",
+    "              'The Guardian':'%A, %d.%m.%y',\n",
+    "              'Daily News':'%A, %d %B %Y'}\n",
+    "\n",
+    "for news_ in format_dt_news:\n",
+    "    print(news_, dt.datetime.strptime(news_[1], news_to_dt[news_[0]]))\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "##### Задание 2\n",
+    "\n",
+    "Дан поток дат в формате YYYY-MM-DD, в которых встречаются некорректные значения:\n",
+    "stream = [‘2018-04-02’, ‘2018-02-29’, ‘2018-19-02’]\n",
+    "\n",
+    "Напишите функцию, которая проверяет эти даты на корректность. Т. е. для каждой даты возвращает True (дата корректна) или False (некорректная дата)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Дата в формате YYYY-MM-DD: 2018-04-02, Результат: True (дата корректна)\n",
+      "Дата в формате YYYY-MM-DD: 2018-02-29, Результат: False (некорректная дата)\n",
+      "Дата в формате YYYY-MM-DD: 2018-19-02, Результат: False (некорректная дата)\n",
+      "\n",
+      "Начать проверку потока (y - Да, Нет - все остальное):y\n",
+      "Дата в формате YYYY-MM-DD: 1171-16-02, Результат: False (некорректная дата)\n",
+      "\n",
+      "Продолжить проверку потока (Y - Да, Нет - все остальное):y\n",
+      "Дата в формате YYYY-MM-DD: 1627-08-34, Результат: False (некорректная дата)\n",
+      "\n",
+      "Продолжить проверку потока (Y - Да, Нет - все остальное):n\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Решение по заданию 2\n",
+    "\n",
+    "rez = {False:'False (некорректная дата)', True:'True (дата корректна)'}\n",
+    "\n",
+    "#вспомогательная функция для формирования строки даты в формате YYYY-MM-DD\n",
+    "def str_dt(y,m,d):\n",
+    "    def infron_zer(value, max_len):\n",
+    "        str_ = str(value)\n",
+    "        return ('0'*(max_len - len(str_)) + str_)\n",
+    "        \n",
+    "    return(f'{str(y)}-{infron_zer(m, 2)}-{infron_zer(d, 2)}')\n",
+    "\n",
+    "#Проверка \n",
+    "def check_dt(str_dt_in):\n",
+    "    return_val = [True, None]\n",
+    "    try:\n",
+    "        return_val[1] = dt.datetime.strptime(str_dt_in, '%Y-%m-%d')\n",
+    "    except ValueError:\n",
+    "        return_val[0] = False\n",
+    "    return return_val\n",
+    "\n",
+    "#ДОРАБОТКА\n",
+    "stream = ['2018-04-02', '2018-02-29', '2018-19-02']\n",
+    "for item in stream:\n",
+    "    print(f'Дата в формате YYYY-MM-DD: {item}, Результат: {rez[check_dt(item)[0]]}')\n",
+    "#---------\n",
+    "\n",
+    "start = input('\\nНачать проверку потока (y - Да, Нет - все остальное):')\n",
+    "while (start.upper()[0] in ['Н', 'Y']):\n",
+    "    year_  = random.randint(1001,2020)\n",
+    "    month_ = random.randint(1,18)\n",
+    "    day_   = random.randint(1,39)\n",
+    "    dt_ = str_dt(year_, month_, day_)\n",
+    "    print(f'Дата в формате YYYY-MM-DD: {dt_}, Результат: {rez[check_dt(dt_)[0]]}')\n",
+    "    start = input('\\nПродолжить проверку потока (Y - Да, Нет - все остальное):')\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "##### Задание 3\n",
+    "\n",
+    "Напишите функцию date_range, которая возвращает список дат за период от start_date до end_date. Даты должны вводиться в формате YYYY-MM-DD. В случае неверного формата или при start_date > end_date должен возвращаться пустой список."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "date_range('20200101', '20200102', 'day'):\n",
+      " []\n",
+      "\n",
+      "date_range('2019-12-29', '20190301', 'day'):\n",
+      " []\n",
+      "\n",
+      "date_range('2019-12-29', '2020-03-01', 'day'):\n",
+      " ['2019-12-29', '2019-12-30', '2019-12-31', '2020-01-01', '2020-01-02', '2020-01-03', '2020-01-04', '2020-01-05', '2020-01-06', '2020-01-07', '2020-01-08', '2020-01-09', '2020-01-10', '2020-01-11', '2020-01-12', '2020-01-13', '2020-01-14', '2020-01-15', '2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19', '2020-01-20', '2020-01-21', '2020-01-22', '2020-01-23', '2020-01-24', '2020-01-25', '2020-01-26', '2020-01-27', '2020-01-28', '2020-01-29', '2020-01-30', '2020-01-31', '2020-02-01', '2020-02-02', '2020-02-03', '2020-02-04', '2020-02-05', '2020-02-06', '2020-02-07', '2020-02-08', '2020-02-09', '2020-02-10', '2020-02-11', '2020-02-12', '2020-02-13', '2020-02-14', '2020-02-15', '2020-02-16', '2020-02-17', '2020-02-18', '2020-02-19', '2020-02-20', '2020-02-21', '2020-02-22', '2020-02-23', '2020-02-24', '2020-02-25', '2020-02-26', '2020-02-27', '2020-02-28', '2020-02-29', '2020-03-01', '2020-03-01']\n",
+      "\n",
+      "date_range('2019-12-29', '2021-03-01', 'month'):\n",
+      " ['2019-12-29', '2020-01-29', '2020-02-29', '2020-03-29', '2020-04-29', '2020-05-29', '2020-06-29', '2020-07-29', '2020-08-29', '2020-09-29', '2020-10-29', '2020-11-29', '2020-12-29', '2021-01-29', '2021-02-28', '2021-03-01']\n",
+      "\n",
+      "date_range('2019-12-29', '2021-03-01', 'year'):\n",
+      " ['2019-12-29', '2020-12-29', '2021-03-01']\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Решение по заданию 3\n",
+    "\n",
+    "def add_year(dt_, cnt):\n",
+    "    return(dt.datetime(dt_.year + cnt, dt_.month, dt_.day))\n",
+    "\n",
+    "def sub_add_mon(mon, cnt):\n",
+    "    mon_  = mon - 1 + cnt\n",
+    "    year_ = mon_//12\n",
+    "    mon_  = mon_%12 + 1\n",
+    "    return [year_, mon_]\n",
+    "    \n",
+    "def add_month_dt(dt_, cnt):\n",
+    "    month_ = sub_add_mon(dt_.month, cnt)[1]   \n",
+    "    year_  = dt_.year + sub_add_mon(dt_.month, cnt)[0]       \n",
+    "    day_   = min( dt_.day,  \\\n",
+    "                 (dt.datetime(dt_.year + sub_add_mon(dt_.month, cnt + 1)[0], sub_add_mon(dt_.month, cnt + 1)[1], 1) \\\n",
+    "                  + dt.timedelta(days=-1)).day)\n",
+    "    return dt.datetime(year_, month_, day_)\n",
+    "\n",
+    "def add_day(dt_, cnt):\n",
+    "    return(dt_ + dt.timedelta(days = cnt))\n",
+    "\n",
+    "func_add_one = {'year':add_year,  'month':add_month_dt, 'day':add_day}\n",
+    "\n",
+    "def date_range(start_date, end_date, part):\n",
+    "#part - year, month, day\n",
+    "    list_ = []\n",
+    "    i = 0\n",
+    "    check_start = check_dt(start_date)\n",
+    "    check_end   = check_dt(end_date)\n",
+    "    if check_start[0] and check_end[0]:\n",
+    "        element_dt = check_start[1]\n",
+    "        while check_end[1] >= element_dt:\n",
+    "            list_.append(element_dt.strftime('%Y-%m-%d'))\n",
+    "            i += 1\n",
+    "            element_dt = func_add_one[part](check_start[1], i)\n",
+    "            if check_end[1] < element_dt:\n",
+    "                list_.append(check_end[1].strftime('%Y-%m-%d'))\n",
+    "    return(list_)\n",
+    "\n",
+    "print (f\"\\ndate_range('20200101', '20200102', 'day'):\\n {date_range('20200101', '20200102', 'day')}\")\n",
+    "print (f\"\\ndate_range('2019-12-29', '20190301', 'day'):\\n {date_range('2019-12-29', '2019-03-01', 'day')}\")\n",
+    "print (f\"\\ndate_range('2019-12-29', '2020-03-01', 'day'):\\n {date_range('2019-12-29', '2020-03-01', 'day')}\")\n",
+    "print (f\"\\ndate_range('2019-12-29', '2021-03-01', 'month'):\\n {date_range('2019-12-29', '2021-03-01', 'month')}\")\n",
+    "print (f\"\\ndate_range('2019-12-29', '2021-03-01', 'year'):\\n {date_range('2019-12-29', '2021-03-01', 'year')}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "1840a680094a4699850542cc639ad662",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "DatePicker(value=None, description='Начало интервала:')"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "ec24539df5ba4452a5c5f049f768ff95",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "DatePicker(value=None, description='Окончание интервала:')"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "aae8aec8ec5b4405a2798e48a8223337",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "Dropdown(description='Промежуток:', options=('year', 'month', 'day'), value='year')"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "#Демонстрация решения по аданию 3\n",
+    "dPicker_beg = DatePicker(description = 'Начало интервала:')\n",
+    "dPicker_end = DatePicker(description = 'Окончание интервала:')\n",
+    "ddPart      = Dropdown(options = ['year', 'month', 'day'], description = 'Промежуток:')\n",
+    "\n",
+    "def on_change_ddPart(b):\n",
+    "    if (dPicker_beg.value is not None) and (dPicker_end.value is not None):\n",
+    "        print('\\n',b['new'])\n",
+    "        print(date_range(str(dPicker_beg.value), str(dPicker_end.value), b['new'])) \n",
+    "\n",
+    "ddPart.observe(on_change_ddPart, names = 'value')\n",
+    "\n",
+    "display(dPicker_beg)\n",
+    "display(dPicker_end)\n",
+    "display(ddPart)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Задание 4 (бонусное)\n",
+    "#Ваш коллега прислал код функции:\n",
+    "\n",
+    "DEFAULT_USER_COUNT = 3\n",
+    "\n",
+    "def delete_and_return_last_user(region, default_list=['A100', 'A101', 'A102']):\n",
+    "###Удаляет из списка default_list последнего пользователя\n",
+    "###и возвращает ID нового последнего пользователя.\n",
+    "    element_to_delete = default_list[-1]\n",
+    "    default_list.remove(element_to_delete)\n",
+    "    print(default_list)\n",
+    "    return default_list[DEFAULT_USER_COUNT-2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#При однократном вызове этой функции все работает корректно:\n",
+    "delete_and_return_last_user(1)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "#При втором вызове работает НЕ корректно:\n",
+    "delete_and_return_last_user(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "- Что значит ошибка list index out of range?\n",
+    "- Почему при первом запуске функция работает корректно, а при втором - нет?"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "##### Решение по заданию 4\n",
+    "\n",
+    "1. Ошибка 'list index out of range' означает обращение к индексу который выходит за пределы доступного диапозона.\n",
+    "2. Список по умолчанию (default_list) содержит 3 значения, после первого обращения из списка удаляется последний элемент остается 2 значения и выводится элемент с индексом 1 (DEFAULT_USER_COUNT - 2), после второго вызова остается 1 значение c индексом 0, вывод элемента с индексом 1 невозможен. "
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
